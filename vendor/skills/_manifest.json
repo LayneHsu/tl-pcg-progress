@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-09-04T13:09:38.596Z",
+  "skill_ids": [
+    "_mock.echo_hython",
+    "_mock.echo_node_local",
+    "_mock.echo_python_daemon",
+    "stage2_4.placement_table_export"
+  ]
+}
