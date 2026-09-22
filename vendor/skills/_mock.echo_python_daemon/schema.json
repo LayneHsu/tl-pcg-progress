@@ -1,0 +1,17 @@
+{
+  "id": "_mock.echo_python_daemon",
+  "kind": "automated",
+  "runtime": "python_daemon",
+  "inputs_schema": [
+    { "name": "message", "type": "string", "required": true }
+  ],
+  "outputs_schema": [
+    { "name": "echoed", "type": "string" },
+    { "name": "ctx_run_id", "type": "string" }
+  ],
+  "metadata": {
+    "is_destructive": false,
+    "estimated_duration_sec": 1,
+    "rollback_strategy": "none"
+  }
+}

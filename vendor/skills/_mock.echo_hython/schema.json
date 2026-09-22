@@ -1,0 +1,16 @@
+{
+  "id": "_mock.echo_hython",
+  "kind": "automated",
+  "runtime": "hython_subprocess",
+  "inputs_schema": [
+    { "name": "message", "type": "string", "required": true }
+  ],
+  "outputs_schema": [
+    { "name": "echoed", "type": "string" }
+  ],
+  "metadata": {
+    "is_destructive": false,
+    "estimated_duration_sec": 5,
+    "rollback_strategy": "none"
+  }
+}

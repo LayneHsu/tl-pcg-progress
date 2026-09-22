@@ -1,0 +1,263 @@
+{
+  "$schema_doc": "docs/PCG看板可视化改进.md §3.2",
+  "version": 1,
+  "last_updated": "2026-05-07",
+  "_notes": [
+    "v0.2: 模块化PCG通用模板的完整工作项定义 + 依赖关系",
+    "ID 命名规范：{stage}[.{subgroup}].{leaf}",
+    "stage = stage1 / stage2_1..2_5 / stage3_1..3_2 / stage4 / stage5",
+    "groups 表示 stage 内的分组（看板上的中间层）",
+    "work_items 表示 leaf 工作项（看板上点击改状态的最细单元）",
+    "edges 表示工作项之间的执行依赖（from 完成才能开始 to）",
+    "edge.from / to 可以指向 group（表示组内所有 leaf）或单 leaf",
+    "  - group→X 等价于 '组内所有 leaf → X'，daemon 解析时按此展开",
+    "  - X→group 等价于 'X → 组内所有 leaf'",
+    "  - 组与 leaf 间的隐式包含关系（leaf ∈ group）不需要显式 edge",
+    "  - 显示边数 64，展开 group→leaves 后等价 230+ 条 leaf 级依赖",
+    "automation_pattern 同 agent_registry.json 中字段含义",
+    "label_zh = 看板模板里的中文显示名（用于看板/Agent 反查）",
+    "本文件与 agent_registry.json 中 handles_work_items 字段一一对应",
+    "_alias_of = 完全等价的另一工作项（同一动作两次记录）",
+    "_related_to = 相关但不同动作的工作项（仅供参考）",
+    "_template_note = 该 leaf 在通用模板中的设计备注（如主题特异性）",
+    "_status / _conditional = 当前状态或启用条件标注"
+  ],
+
+  "groups": {
+    "stage1": {
+      "label_zh": "资产准备",
+      "stage_label": "阶段 1",
+      "children": [
+        "stage1.modules",
+        "stage1.extra_bp",
+        "stage1.env_bp",
+        "stage1.module_data",
+        "stage1.asset_tables"
+      ]
+    },
+    "stage1.modules": { "label_zh": "模块（Map / BP）", "parent": "stage1" },
+    "stage1.extra_bp": { "label_zh": "额外模型/BP", "parent": "stage1" },
+    "stage1.env_bp": { "label_zh": "环境BP", "parent": "stage1" },
+    "stage1.module_data": { "label_zh": "模块数据", "parent": "stage1" },
+    "stage1.asset_tables": { "label_zh": "资产表格", "parent": "stage1" },
+
+    "stage2": {
+      "label_zh": "PCG数据准备",
+      "stage_label": "阶段 2",
+      "children": ["stage2_1", "stage2_2", "stage2_3", "stage2_4", "stage2_5"]
+    },
+    "stage2_1": { "label_zh": "主题确认", "parent": "stage2" },
+    "stage2_2": { "label_zh": "PCG数据准备", "parent": "stage2" },
+    "stage2_3": { "label_zh": "自动生成资产", "parent": "stage2" },
+    "stage2_4": { "label_zh": "PCG数据入库", "parent": "stage2" },
+    "stage2_5": { "label_zh": "PCG网格打包", "parent": "stage2" },
+
+    "stage3": {
+      "label_zh": "PCG功能准备",
+      "stage_label": "阶段 3",
+      "children": ["stage3_1", "stage3_2"]
+    },
+    "stage3_1": { "label_zh": "布局功能适配", "parent": "stage3" },
+    "stage3_2": { "label_zh": "生成功能适配", "parent": "stage3" },
+
+    "stage4": {
+      "label_zh": "引擎流程功能",
+      "stage_label": "阶段 4",
+      "children": []
+    },
+
+    "stage5": {
+      "label_zh": "引擎中生成确认",
+      "stage_label": "阶段 5",
+      "children": []
+    }
+  },
+
+  "work_items": {
+    "stage1.modules.start_base":         { "label_zh": "Start_Base",         "group": "stage1.modules", "automation_pattern": "human", "human_action_hint": "美术建白模 + 地编摆放 + nxn_tile_packer 打包", "_template_note": "当前 8 个模块名是 YWMD 主题特例，新主题套用模板时可能需替换" },
+    "stage1.modules.end_huge":           { "label_zh": "End_Huge",           "group": "stage1.modules", "automation_pattern": "human" },
+    "stage1.modules.area_huge":          { "label_zh": "Area_Huge",          "group": "stage1.modules", "automation_pattern": "human" },
+    "stage1.modules.area_base_1x1_1":    { "label_zh": "Area_Base_1x1_1",    "group": "stage1.modules", "automation_pattern": "human" },
+    "stage1.modules.area_base_1x1_3":    { "label_zh": "Area_Base_1x1_3",    "group": "stage1.modules", "automation_pattern": "human" },
+    "stage1.modules.area_base_1x1_5":    { "label_zh": "Area_Base_1x1_5",    "group": "stage1.modules", "automation_pattern": "human" },
+    "stage1.modules.area_base_1x1_7":    { "label_zh": "Area_Base_1x1_7",    "group": "stage1.modules", "automation_pattern": "human" },
+    "stage1.modules.area_base_1x1_15":   { "label_zh": "Area_Base_1x1_15",   "group": "stage1.modules", "automation_pattern": "human" },
+
+    "stage1.extra_bp.dynamic_wall_bp":          { "label_zh": "动态墙BP",            "group": "stage1.extra_bp", "automation_pattern": "human" },
+    "stage1.extra_bp.dynamic_wall_bp_white":    { "label_zh": "动态墙BP对应白模",     "group": "stage1.extra_bp", "automation_pattern": "human" },
+    "stage1.extra_bp.floor_nav_white":          { "label_zh": "地板对应的导航白模",   "group": "stage1.extra_bp", "automation_pattern": "human" },
+
+    "stage1.env_bp.directional_light":   { "label_zh": "平行光",      "group": "stage1.env_bp", "automation_pattern": "human" },
+    "stage1.env_bp.atmospheric_fog":     { "label_zh": "大气雾",      "group": "stage1.env_bp", "automation_pattern": "human" },
+    "stage1.env_bp.reflection_capture":  { "label_zh": "反射球",      "group": "stage1.env_bp", "automation_pattern": "human" },
+
+    "stage1.module_data.single_module_json": { "label_zh": "单模块json文件",         "group": "stage1.module_data", "automation_pattern": "agent", "_handler_hint": "nxn_tile_packer 自动产出" },
+    "stage1.module_data.stats_json":         { "label_zh": "子主题模块统计json文件", "group": "stage1.module_data", "automation_pattern": "agent", "_handler_hint": "nxn_tile_packer 自动产出" },
+
+    "stage1.asset_tables.placement":           { "label_zh": "放置用资产表",                "group": "stage1.asset_tables", "automation_pattern": "mixed", "mixed_pattern": "B" },
+    "stage1.asset_tables.collision_excluded":  { "label_zh": "BP碰撞排除资产表",            "group": "stage1.asset_tables", "automation_pattern": "mixed", "mixed_pattern": "B" },
+    "stage1.asset_tables.nav_ground":          { "label_zh": "地板与导航白模对应资产表",     "group": "stage1.asset_tables", "automation_pattern": "mixed", "mixed_pattern": "B" },
+
+    "stage2_1.parent_theme_name":      { "label_zh": "父主题名确认",              "group": "stage2_1", "automation_pattern": "agent" },
+    "stage2_1.sub_theme_name":         { "label_zh": "子主题名确认",              "group": "stage2_1", "automation_pattern": "agent" },
+    "stage2_1.engine_asset_folder":    { "label_zh": "引擎资产文件夹路径确认",     "group": "stage2_1", "automation_pattern": "agent" },
+    "stage2_1.tile_size":              { "label_zh": "模块尺寸确认",              "group": "stage2_1", "automation_pattern": "agent" },
+    "stage2_1.road_width":             { "label_zh": "路宽尺寸确认",              "group": "stage2_1", "automation_pattern": "agent" },
+    "stage2_1.distant_tile":           { "label_zh": "有无远景确认",              "group": "stage2_1", "automation_pattern": "agent" },
+    "stage2_1.black_box":              { "label_zh": "有无黑盒确认",              "group": "stage2_1", "automation_pattern": "agent" },
+    "stage2_1.staticmesh":             { "label_zh": "staticmesh确认",            "group": "stage2_1", "automation_pattern": "agent" },
+    "stage2_1.module_bp":              { "label_zh": "模块BP确认",                "group": "stage2_1", "automation_pattern": "agent" },
+    "stage2_1.common_assets":          { "label_zh": "通用资产确认",              "group": "stage2_1" },
+    "stage2_1.module_map":             { "label_zh": "模块map确认",               "group": "stage2_1", "automation_pattern": "agent" },
+    "stage2_1.single_module_json":     { "label_zh": "单模块json文件确认",        "group": "stage2_1", "automation_pattern": "agent" },
+    "stage2_1.bp_statistics_json":     { "label_zh": "子主题模块统计json文件确认", "group": "stage2_1", "automation_pattern": "agent" },
+
+    "stage2_2.bp_statistics_file":         { "label_zh": "BP模块统计文件",                "group": "stage2_2", "automation_pattern": "agent" },
+    "stage2_2.theme_config_write":         { "label_zh": "主题文件配置写入",              "group": "stage2_2", "automation_pattern": "mixed", "mixed_pattern": "A" },
+    "stage2_2.placement_table":            { "label_zh": "放置用资产表文件",              "group": "stage2_2", "automation_pattern": "mixed", "mixed_pattern": "B" },
+    "stage2_2.common_assets_table":         { "label_zh": "通用资产进资产表文件",          "group": "stage2_2" },
+    "stage2_2.collision_excluded_table":   { "label_zh": "BP碰撞排除资产表检查",          "group": "stage2_2", "automation_pattern": "mixed", "mixed_pattern": "B" },
+    "stage2_2.nav_ground_table":           { "label_zh": "导航地板与白模对应资产表检查",   "group": "stage2_2", "automation_pattern": "mixed", "mixed_pattern": "B" },
+    "stage2_2.assets_groups_csv":          { "label_zh": "资产组表文件",                  "group": "stage2_2", "automation_pattern": "human", "human_action_hint": "TA 手动维护 Assets_Groups.csv" },
+    "stage2_2.type_tree_csv":              { "label_zh": "资产种类树文件",                "group": "stage2_2", "automation_pattern": "human", "_status_hint": "当前模块化主题暂未启用" },
+
+    "stage2_3.module_bp_to_sm":         { "label_zh": "模块BP转SM",      "group": "stage2_3", "automation_pattern": "agent" },
+    "stage2_3.dynamic_wall_bp_to_sm":   { "label_zh": "动态墙BP转SM",    "group": "stage2_3", "automation_pattern": "agent" },
+    "stage2_3.distant_bp_to_sm":        { "label_zh": "远景BP转SM",      "group": "stage2_3", "automation_pattern": "agent", "_conditional": "feature: Distant_Tile == 1" },
+    "stage2_3.black_box_bp_gen":        { "label_zh": "模块黑盒BP生成",  "group": "stage2_3", "automation_pattern": "agent", "_conditional": "feature: Black_Box == 1" },
+    "stage2_3.black_box_bp_to_sm":      { "label_zh": "黑盒BP转SM",      "group": "stage2_3", "automation_pattern": "agent", "_conditional": "feature: Black_Box == 1" },
+    "stage2_3.white_box_bp_gen":        { "label_zh": "模块白盒BP生成",  "group": "stage2_3", "automation_pattern": "agent" },
+    "stage2_3.white_box_bp_to_sm":      { "label_zh": "白盒BP转SM",      "group": "stage2_3", "automation_pattern": "agent" },
+    "stage2_3.collision_bp_gen":        { "label_zh": "碰撞BP生成",      "group": "stage2_3", "automation_pattern": "agent" },
+    "stage2_3.collision_bp_to_sm":      { "label_zh": "碰撞BP转SM",      "group": "stage2_3", "automation_pattern": "agent" },
+
+    "stage2_4.placement_table_export":         { "label_zh": "放置用资产表文件",          "group": "stage2_4", "automation_pattern": "agent" },
+    "stage2_4.collision_excluded_export":      { "label_zh": "BP碰撞排除资产表",          "group": "stage2_4", "automation_pattern": "agent" },
+    "stage2_4.nav_ground_export":              { "label_zh": "导航地板与白模对应资产表",   "group": "stage2_4", "automation_pattern": "agent" },
+    "stage2_4.assets_groups_export":           { "label_zh": "资产组表文件",              "group": "stage2_4", "automation_pattern": "agent" },
+    "stage2_4.sm_fbx":                         { "label_zh": "sm存FBX",                   "group": "stage2_4", "automation_pattern": "agent" },
+    "stage2_4.bpsm_fbx":                       { "label_zh": "bpsm存FBX",                 "group": "stage2_4", "automation_pattern": "agent" },
+    "stage2_4.dynamic_wall_bpsm_fbx":          { "label_zh": "动态墙bpsm存FBX",           "group": "stage2_4", "automation_pattern": "agent" },
+    "stage2_4.white_box_sm_fbx":               { "label_zh": "白盒sm存FBX",               "group": "stage2_4", "automation_pattern": "agent" },
+    "stage2_4.black_box_sm_fbx":               { "label_zh": "黑盒sm存FBX",               "group": "stage2_4", "automation_pattern": "agent" },
+    "stage2_4.collision_sm_fbx":               { "label_zh": "碰撞盒sm存FBX",             "group": "stage2_4", "automation_pattern": "agent" },
+
+    "stage2_5.fbx_to_geo":                     { "label_zh": "FBX打包为主题GEO",          "group": "stage2_5", "automation_pattern": "agent" },
+
+    "stage3_1.tile_size_adapt":             { "label_zh": "模块尺寸适配",     "group": "stage3_1", "automation_pattern": "human" },
+    "stage3_1.road_width_adapt":            { "label_zh": "路宽尺寸适配",     "group": "stage3_1", "automation_pattern": "human" },
+    "stage3_1.random_func_adapt":           { "label_zh": "随机功能适配",     "group": "stage3_1", "automation_pattern": "human" },
+    "stage3_1.theme_specific_layout_adapt": { "label_zh": "主题特有功能适配", "group": "stage3_1", "automation_pattern": "human" },
+
+    "stage3_2.module_adapt":             { "label_zh": "模块适配",         "group": "stage3_2", "automation_pattern": "human" },
+    "stage3_2.dynamic_wall_adapt":       { "label_zh": "动态墙适配",       "group": "stage3_2", "automation_pattern": "human" },
+    "stage3_2.road_adapt":               { "label_zh": "道路适配",         "group": "stage3_2", "automation_pattern": "human" },
+    "stage3_2.white_box_adapt":          { "label_zh": "白盒适配",         "group": "stage3_2", "automation_pattern": "human" },
+    "stage3_2.black_box_adapt":          { "label_zh": "黑盒适配",         "group": "stage3_2", "automation_pattern": "human" },
+    "stage3_2.distant_adapt":            { "label_zh": "远景适配",         "group": "stage3_2", "automation_pattern": "human" },
+    "stage3_2.collision_bp_adapt":       { "label_zh": "碰撞BP适配",       "group": "stage3_2", "automation_pattern": "human" },
+    "stage3_2.shared_wall_collision_adapt": { "label_zh": "共享墙碰撞盒适配", "group": "stage3_2" },
+    "stage3_2.nav_ground_adapt":         { "label_zh": "导航地面适配",     "group": "stage3_2", "automation_pattern": "human" },
+    "stage3_2.env_bp_adapt":             { "label_zh": "环境BP适配",       "group": "stage3_2", "automation_pattern": "human" },
+    "stage3_2.theme_specific_gen_adapt": { "label_zh": "主题特有功能适配", "group": "stage3_2", "automation_pattern": "human" },
+
+    "stage4.theme_name_register":     { "label_zh": "主题名注册",       "group": "stage4", "automation_pattern": "agent",  "_related_to": "stage2_2.theme_config_write", "_note": "register=检查该主题已在 Theme_Configs.json 存在；theme_config_write=填字段。是相关而非同一动作" },
+    "stage4.hda_version_update":      { "label_zh": "HDA版本更新",      "group": "stage4", "automation_pattern": "agent" },
+    "stage4.theme_env_sphere_config": { "label_zh": "主题环境球配置",   "group": "stage4", "automation_pattern": "agent", "_config_target": "postprocess_items 中 level_name=Landscape 的 1 项", "_bp_count": 1, "_bp_naming": "BP_{ShortName}_Light（含环境球+平行光+大气雾等组件，命名已确认）" },
+    "stage4.theme_lighting_config":   { "label_zh": "主题灯光配置",     "group": "stage4", "automation_pattern": "agent", "_config_target": "postprocess_items 中 BuildData_Mobile + BuildData_PC + CharacterLight 共 3 项", "_bp_count": 3, "_bp_naming": "PC/Mobile/Character 三种灯光控制器 BP（每主题专属位置；3 个 BP 的具体命名规则待 TA 确认）", "_known_unknown": "BP 命名规则待确认（目前推测如 BP_{ShortName}_LightController_PC，实际可能不同）" },
+
+    "stage5.level_folder_gen":        { "label_zh": "关卡文件夹生成确认", "group": "stage5", "automation_pattern": "agent" },
+    "stage5.work_level":              { "label_zh": "Work关卡",          "group": "stage5", "automation_pattern": "mixed", "mixed_pattern": "D" },
+    "stage5.sequence_level":          { "label_zh": "序列关卡",          "group": "stage5", "automation_pattern": "mixed", "mixed_pattern": "D" },
+    "stage5.art_asset_placement":     { "label_zh": "美术资产放置",      "group": "stage5", "automation_pattern": "mixed", "mixed_pattern": "D" },
+    "stage5.env_lighting_placement":  { "label_zh": "环境灯光放置确认",  "group": "stage5", "automation_pattern": "mixed", "mixed_pattern": "D" }
+  },
+
+  "edges": [
+    { "from": "stage1.modules",            "to": "stage1.module_data.single_module_json", "type": "must_complete", "reason": "nxn_tile_packer 输出 JSON 需要 BP 已打包" },
+    { "from": "stage1.modules",            "to": "stage1.module_data.stats_json",         "type": "must_complete", "reason": "统计 JSON 同上" },
+    { "from": "stage1.modules",            "to": "stage1.asset_tables.placement",         "type": "must_complete", "reason": "资产表内容来自模块" },
+    { "from": "stage1.modules",            "to": "stage1.asset_tables.collision_excluded","type": "must_complete" },
+    { "from": "stage1.extra_bp.floor_nav_white", "to": "stage1.asset_tables.nav_ground", "type": "must_complete", "reason": "导航对应表 B 列指向白模" },
+
+    { "from": "stage1.modules",            "to": "stage2_1.module_bp",         "type": "must_complete" },
+    { "from": "stage1.modules",            "to": "stage2_1.module_map",        "type": "must_complete" },
+    { "from": "stage1.modules",            "to": "stage2_1.staticmesh",        "type": "must_complete", "reason": "模块包含 SM 资产" },
+    { "from": "stage1.module_data.single_module_json", "to": "stage2_1.single_module_json", "type": "must_complete" },
+    { "from": "stage1.module_data.stats_json",         "to": "stage2_1.bp_statistics_json", "type": "must_complete" },
+    { "from": "stage1.module_data.stats_json",         "to": "stage2_2.bp_statistics_file", "type": "must_complete", "reason": "同一文件，2.2 检查文件存在" },
+
+    { "from": "stage2_1",                  "to": "stage2_2.theme_config_write", "type": "must_complete", "reason": "12 项确认完成才认为主题配置就绪" },
+    { "from": "stage2_2.theme_config_write", "to": "stage4.theme_name_register", "type": "must_complete", "reason": "实质同一动作（看板冗余记录）" },
+
+    { "from": "stage1.asset_tables.placement",          "to": "stage2_2.placement_table",          "type": "must_complete", "reason": "stage1 资产表数据来源 → stage2_2 在 UE DT 填表" },
+    { "from": "stage1.asset_tables.collision_excluded", "to": "stage2_2.collision_excluded_table", "type": "must_complete" },
+    { "from": "stage1.asset_tables.nav_ground",         "to": "stage2_2.nav_ground_table",         "type": "must_complete" },
+
+    { "from": "stage2_2.placement_table",            "to": "stage2_3.module_bp_to_sm",       "type": "must_complete", "reason": "BP 转 SM 需要资产表确定哪些 BP 要转" },
+    { "from": "stage2_2.placement_table",            "to": "stage2_3.dynamic_wall_bp_to_sm", "type": "must_complete" },
+    { "from": "stage2_2.placement_table",            "to": "stage2_3.distant_bp_to_sm",      "type": "soft" },
+
+    { "from": "stage2_3.black_box_bp_gen",   "to": "stage2_3.black_box_bp_to_sm",   "type": "must_complete" },
+    { "from": "stage2_3.white_box_bp_gen",   "to": "stage2_3.white_box_bp_to_sm",   "type": "must_complete" },
+    { "from": "stage2_3.collision_bp_gen",   "to": "stage2_3.collision_bp_to_sm",   "type": "must_complete" },
+
+    { "from": "stage1.modules",                  "to": "stage2_3.module_bp_to_sm",      "type": "must_complete", "reason": "源 BP 在 stage1 制作" },
+    { "from": "stage1.extra_bp.dynamic_wall_bp", "to": "stage2_3.dynamic_wall_bp_to_sm","type": "must_complete" },
+    { "from": "stage1.modules",                  "to": "stage2_3.black_box_bp_gen",     "type": "must_complete" },
+    { "from": "stage1.modules",                  "to": "stage2_3.white_box_bp_gen",     "type": "must_complete" },
+    { "from": "stage1.modules",                  "to": "stage2_3.collision_bp_gen",     "type": "must_complete" },
+
+    { "from": "stage2_3.module_bp_to_sm",        "to": "stage2_4.bpsm_fbx",                "type": "must_complete" },
+    { "from": "stage2_3.dynamic_wall_bp_to_sm",  "to": "stage2_4.dynamic_wall_bpsm_fbx",   "type": "must_complete" },
+    { "from": "stage2_3.black_box_bp_to_sm",     "to": "stage2_4.black_box_sm_fbx",        "type": "must_complete" },
+    { "from": "stage2_3.white_box_bp_to_sm",     "to": "stage2_4.white_box_sm_fbx",        "type": "must_complete" },
+    { "from": "stage2_3.collision_bp_to_sm",     "to": "stage2_4.collision_sm_fbx",        "type": "must_complete" },
+    { "from": "stage1.modules",                  "to": "stage2_4.sm_fbx",                  "type": "must_complete", "reason": "美术零件 SM 在 stage1" },
+
+    { "from": "stage2_2.placement_table",          "to": "stage2_4.placement_table_export",      "type": "must_complete" },
+    { "from": "stage2_2.collision_excluded_table", "to": "stage2_4.collision_excluded_export",   "type": "must_complete" },
+    { "from": "stage2_2.nav_ground_table",         "to": "stage2_4.nav_ground_export",           "type": "must_complete" },
+    { "from": "stage2_2.assets_groups_csv",        "to": "stage2_4.assets_groups_export",        "type": "must_complete", "reason": "实际是同一文件，确认到位" },
+
+    { "from": "stage2_4.sm_fbx",                   "to": "stage2_5.fbx_to_geo", "type": "must_complete" },
+    { "from": "stage2_4.bpsm_fbx",                 "to": "stage2_5.fbx_to_geo", "type": "must_complete" },
+    { "from": "stage2_4.dynamic_wall_bpsm_fbx",    "to": "stage2_5.fbx_to_geo", "type": "must_complete" },
+    { "from": "stage2_4.white_box_sm_fbx",         "to": "stage2_5.fbx_to_geo", "type": "must_complete" },
+    { "from": "stage2_4.black_box_sm_fbx",         "to": "stage2_5.fbx_to_geo", "type": "must_complete" },
+    { "from": "stage2_4.collision_sm_fbx",         "to": "stage2_5.fbx_to_geo", "type": "must_complete" },
+
+    { "from": "stage2_4.placement_table_export",   "to": "stage3_2.module_adapt",       "type": "must_complete", "reason": "Houdini 端读 JSON 做配置" },
+    { "from": "stage2_4.collision_excluded_export","to": "stage3_2.collision_bp_adapt", "type": "must_complete" },
+    { "from": "stage2_4.nav_ground_export",        "to": "stage3_2.nav_ground_adapt",   "type": "must_complete" },
+    { "from": "stage2_5.fbx_to_geo",               "to": "stage3_2",                    "type": "must_complete", "reason": "生成功能适配需要主题 GEO 文件" },
+
+    { "from": "stage2_1.tile_size",  "to": "stage3_1.tile_size_adapt",  "type": "must_complete" },
+    { "from": "stage2_1.road_width", "to": "stage3_1.road_width_adapt", "type": "must_complete" },
+
+    { "from": "stage3_1", "to": "stage3_2",            "type": "soft", "reason": "通常布局先做但可并行" },
+    { "from": "stage3_1", "to": "stage4.hda_version_update", "type": "must_complete" },
+    { "from": "stage3_2", "to": "stage4.hda_version_update", "type": "must_complete", "reason": "适配完成后 HDA 才能升级" },
+
+    { "from": "stage1.env_bp", "to": "stage4.theme_env_sphere_config", "type": "must_complete" },
+    { "from": "stage1.env_bp", "to": "stage4.theme_lighting_config",   "type": "must_complete" },
+
+    { "from": "stage4.hda_version_update",    "to": "stage5.level_folder_gen",      "type": "must_complete", "reason": "PCG Pipeline 跑前必须用最新 HDA" },
+    { "from": "stage4.hda_version_update",    "to": "stage5.work_level",            "type": "must_complete" },
+    { "from": "stage4.hda_version_update",    "to": "stage5.sequence_level",        "type": "must_complete" },
+    { "from": "stage4.hda_version_update",    "to": "stage5.art_asset_placement",   "type": "must_complete" },
+    { "from": "stage4.hda_version_update",    "to": "stage5.env_lighting_placement","type": "must_complete" },
+    { "from": "stage4.theme_lighting_config", "to": "stage5.env_lighting_placement","type": "must_complete", "reason": "postprocess_items 必须先填" },
+    { "from": "stage4.theme_env_sphere_config","to": "stage5.env_lighting_placement","type": "must_complete", "reason": "环境球资产必须就绪" },
+
+    { "from": "stage5.level_folder_gen", "to": "stage5.work_level",           "type": "must_complete", "reason": "PCG Pipeline Step1→Step2" },
+    { "from": "stage5.work_level",       "to": "stage5.sequence_level",       "type": "must_complete", "reason": "Step2→Step2.1 Duplicate to Landscape" },
+    { "from": "stage5.work_level",       "to": "stage5.art_asset_placement",  "type": "must_complete", "reason": "美术资产由 HDA 在 work 关卡放置" },
+    { "from": "stage5.sequence_level",   "to": "stage5.env_lighting_placement","type": "must_complete", "reason": "Step3 Postprocess 在子关卡注入 BP_Env" },
+
+    { "from": "stage1.extra_bp.dynamic_wall_bp",       "to": "stage1.extra_bp.dynamic_wall_bp_white", "type": "must_complete", "reason": "动态墙 BP 与对应白模配对生产" },
+    { "from": "stage2_3.distant_bp_to_sm",             "to": "stage2_4.bpsm_fbx",                     "type": "must_complete", "reason": "远景转 SM 后混入 bpsm 桶导出" },
+
+    { "from": "stage1.modules",                        "to": "stage2_4.sm_fbx",                       "type": "soft", "reason": "美术原始零件 SM 也可独立导出 FBX（与 bpsm 区分）" }
+  ]
+}

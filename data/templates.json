@@ -1,0 +1,1544 @@
+{
+  "list": [
+    {
+      "id": "9e88b918-bf43-46e8-9a86-36ab0e337acd",
+      "name": "模块式通用模板",
+      "nodes": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "automation_pattern": "human",
+                  "children": [],
+                  "work_item_id": "stage1.modules.start_base",
+                  "name": "Start_Base"
+                },
+                {
+                  "children": [],
+                  "name": "End_Huge",
+                  "automation_pattern": "human",
+                  "work_item_id": "stage1.modules.end_huge"
+                },
+                {
+                  "work_item_id": "stage1.modules.area_huge",
+                  "automation_pattern": "human",
+                  "children": [],
+                  "name": "Area_Huge"
+                },
+                {
+                  "work_item_id": "stage1.modules.area_base_1x1_1",
+                  "automation_pattern": "human",
+                  "name": "Area_Base_1x1_1",
+                  "children": []
+                },
+                {
+                  "work_item_id": "stage1.modules.area_base_1x1_3",
+                  "children": [],
+                  "name": "Area_Base_1x1_3",
+                  "automation_pattern": "human"
+                },
+                {
+                  "children": [],
+                  "automation_pattern": "human",
+                  "work_item_id": "stage1.modules.area_base_1x1_5",
+                  "name": "Area_Base_1x1_5"
+                },
+                {
+                  "children": [],
+                  "automation_pattern": "human",
+                  "work_item_id": "stage1.modules.area_base_1x1_7",
+                  "name": "Area_Base_1x1_7"
+                },
+                {
+                  "automation_pattern": "human",
+                  "work_item_id": "stage1.modules.area_base_1x1_15",
+                  "children": [],
+                  "name": "Area_Base_1x1_15"
+                }
+              ],
+              "name": "模块（Map / BP）"
+            },
+            {
+              "name": "额外模型/BP",
+              "children": [
+                {
+                  "work_item_id": "stage1.extra_bp.dynamic_wall_bp",
+                  "automation_pattern": "human",
+                  "children": [],
+                  "name": "动态墙BP"
+                },
+                {
+                  "automation_pattern": "human",
+                  "children": [],
+                  "work_item_id": "stage1.extra_bp.dynamic_wall_bp_white",
+                  "name": "动态墙BP对应白模"
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage1.extra_bp.floor_nav_white",
+                  "name": "地板对应的导航白模",
+                  "automation_pattern": "human"
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "work_item_id": "stage1.env_bp.directional_light",
+                  "name": "平行光",
+                  "automation_pattern": "human"
+                },
+                {
+                  "work_item_id": "stage1.env_bp.atmospheric_fog",
+                  "name": "大气雾",
+                  "children": [],
+                  "automation_pattern": "human"
+                },
+                {
+                  "name": "反射球",
+                  "automation_pattern": "human",
+                  "work_item_id": "stage1.env_bp.reflection_capture",
+                  "children": []
+                }
+              ],
+              "name": "环境BP"
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "name": "单模块json文件",
+                  "automation_pattern": "agent",
+                  "work_item_id": "stage1.module_data.single_module_json"
+                },
+                {
+                  "children": [],
+                  "automation_pattern": "agent",
+                  "name": "子主题模块统计json文件",
+                  "work_item_id": "stage1.module_data.stats_json"
+                }
+              ],
+              "name": "模块数据"
+            },
+            {
+              "name": "资产表格",
+              "children": [
+                {
+                  "name": "放置用资产表",
+                  "children": [],
+                  "work_item_id": "stage1.asset_tables.placement",
+                  "automation_pattern": "mixed",
+                  "mixed_pattern": "B"
+                },
+                {
+                  "mixed_pattern": "B",
+                  "work_item_id": "stage1.asset_tables.collision_excluded",
+                  "automation_pattern": "mixed",
+                  "name": "BP碰撞排除资产表",
+                  "children": []
+                },
+                {
+                  "name": "地板与导航白模对应资产表",
+                  "children": [],
+                  "work_item_id": "stage1.asset_tables.nav_ground",
+                  "automation_pattern": "mixed",
+                  "mixed_pattern": "B"
+                }
+              ]
+            }
+          ],
+          "name": "资产准备"
+        },
+        {
+          "name": "PCG数据准备",
+          "children": [
+            {
+              "children": [
+                {
+                  "name": "父主题名确认",
+                  "children": [],
+                  "work_item_id": "stage2_1.parent_theme_name",
+                  "automation_pattern": "agent"
+                },
+                {
+                  "automation_pattern": "agent",
+                  "work_item_id": "stage2_1.sub_theme_name",
+                  "children": [],
+                  "name": "子主题名确认"
+                },
+                {
+                  "children": [],
+                  "name": "引擎资产文件夹路径确认",
+                  "automation_pattern": "agent",
+                  "work_item_id": "stage2_1.engine_asset_folder"
+                },
+                {
+                  "work_item_id": "stage2_1.tile_size",
+                  "children": [],
+                  "name": "模块尺寸确认",
+                  "automation_pattern": "agent"
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage2_1.road_width",
+                  "automation_pattern": "agent",
+                  "name": "路宽尺寸确认"
+                },
+                {
+                  "automation_pattern": "agent",
+                  "work_item_id": "stage2_1.distant_tile",
+                  "name": "有无远景确认",
+                  "children": []
+                },
+                {
+                  "work_item_id": "stage2_1.black_box",
+                  "name": "有无黑盒确认",
+                  "children": [],
+                  "automation_pattern": "agent"
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage2_1.staticmesh",
+                  "name": "主题静态网格资产确认"
+                },
+                {
+                  "name": "主题模块BP确认",
+                  "children": [],
+                  "work_item_id": "stage2_1.module_bp"
+                },
+                {
+                  "work_item_id": "stage2_1.module_map",
+                  "automation_pattern": "agent",
+                  "children": [],
+                  "name": "模块map确认"
+                },
+                {
+                  "work_item_id": "stage2_1.single_module_json",
+                  "name": "单模块json文件确认",
+                  "automation_pattern": "agent",
+                  "children": []
+                },
+                {
+                  "work_item_id": "stage2_1.bp_statistics_json",
+                  "children": [],
+                  "automation_pattern": "agent",
+                  "name": "子主题模块统计json文件确认"
+                },
+                {
+                  "children": [],
+                  "name": "通用资产确认",
+                  "work_item_id": "stage2_1.common_assets"
+                }
+              ],
+              "name": "主题确认"
+            },
+            {
+              "name": "PCG数据准备",
+              "children": [
+                {
+                  "automation_pattern": "agent",
+                  "name": "BP模块统计文件",
+                  "children": [],
+                  "work_item_id": "stage2_2.bp_statistics_file"
+                },
+                {
+                  "work_item_id": "stage2_2.theme_config_write",
+                  "children": [],
+                  "mixed_pattern": "A",
+                  "automation_pattern": "mixed",
+                  "name": "主题文件配置写入"
+                },
+                {
+                  "children": [],
+                  "name": "主题资产进资产表文件",
+                  "work_item_id": "stage2_2.placement_table"
+                },
+                {
+                  "children": [],
+                  "name": "通用资产进资产表文件 ",
+                  "work_item_id": "stage2_2.common_assets_table"
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage2_2.collision_excluded_table",
+                  "automation_pattern": "mixed",
+                  "name": "BP碰撞排除资产表检查",
+                  "mixed_pattern": "B"
+                },
+                {
+                  "mixed_pattern": "B",
+                  "automation_pattern": "mixed",
+                  "name": "导航地板与白模对应资产表检查",
+                  "work_item_id": "stage2_2.nav_ground_table",
+                  "children": []
+                },
+                {
+                  "work_item_id": "stage2_2.assets_groups_csv",
+                  "name": "资产组表文件",
+                  "automation_pattern": "human",
+                  "children": []
+                },
+                {
+                  "name": "资产种类树文件",
+                  "children": [],
+                  "automation_pattern": "human",
+                  "work_item_id": "stage2_2.type_tree_csv"
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "automation_pattern": "agent",
+                  "name": "模块BP转SM",
+                  "work_item_id": "stage2_3.module_bp_to_sm"
+                },
+                {
+                  "children": [],
+                  "name": "动态墙BP转SM",
+                  "work_item_id": "stage2_3.dynamic_wall_bp_to_sm",
+                  "automation_pattern": "agent"
+                },
+                {
+                  "automation_pattern": "agent",
+                  "name": "远景BP转SM",
+                  "work_item_id": "stage2_3.distant_bp_to_sm",
+                  "children": []
+                },
+                {
+                  "automation_pattern": "agent",
+                  "work_item_id": "stage2_3.black_box_bp_gen",
+                  "children": [],
+                  "name": "模块黑盒BP生成"
+                },
+                {
+                  "work_item_id": "stage2_3.black_box_bp_to_sm",
+                  "automation_pattern": "agent",
+                  "name": "黑盒BP转SM",
+                  "children": []
+                },
+                {
+                  "name": "模块白盒BP生成",
+                  "work_item_id": "stage2_3.white_box_bp_gen",
+                  "children": [],
+                  "automation_pattern": "agent"
+                },
+                {
+                  "name": "白盒BP转SM",
+                  "work_item_id": "stage2_3.white_box_bp_to_sm",
+                  "automation_pattern": "agent",
+                  "children": []
+                },
+                {
+                  "name": "碰撞BP生成",
+                  "work_item_id": "stage2_3.collision_bp_gen",
+                  "children": [],
+                  "automation_pattern": "agent"
+                },
+                {
+                  "name": "碰撞BP转SM",
+                  "children": [],
+                  "work_item_id": "stage2_3.collision_bp_to_sm",
+                  "automation_pattern": "agent"
+                }
+              ],
+              "name": "自动生成资产"
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "name": "放置用资产表文件",
+                  "automation_pattern": "agent",
+                  "work_item_id": "stage2_4.placement_table_export"
+                },
+                {
+                  "name": "BP碰撞排除资产表",
+                  "automation_pattern": "agent",
+                  "work_item_id": "stage2_4.collision_excluded_export",
+                  "children": []
+                },
+                {
+                  "work_item_id": "stage2_4.nav_ground_export",
+                  "automation_pattern": "agent",
+                  "name": "导航地板与白模对应资产表",
+                  "children": []
+                },
+                {
+                  "name": "资产组表文件",
+                  "automation_pattern": "agent",
+                  "children": [],
+                  "work_item_id": "stage2_4.assets_groups_export"
+                },
+                {
+                  "work_item_id": "stage2_4.sm_fbx",
+                  "name": "sm存FBX",
+                  "children": [],
+                  "automation_pattern": "agent"
+                },
+                {
+                  "name": "bpsm存FBX",
+                  "work_item_id": "stage2_4.bpsm_fbx",
+                  "children": [],
+                  "automation_pattern": "agent"
+                },
+                {
+                  "children": [],
+                  "automation_pattern": "agent",
+                  "name": "动态墙bpsm存FBX",
+                  "work_item_id": "stage2_4.dynamic_wall_bpsm_fbx"
+                },
+                {
+                  "work_item_id": "stage2_4.white_box_sm_fbx",
+                  "name": "白盒sm存FBX",
+                  "children": [],
+                  "automation_pattern": "agent"
+                },
+                {
+                  "work_item_id": "stage2_4.black_box_sm_fbx",
+                  "children": [],
+                  "automation_pattern": "agent",
+                  "name": "黑盒sm存FBX"
+                },
+                {
+                  "automation_pattern": "agent",
+                  "work_item_id": "stage2_4.collision_sm_fbx",
+                  "name": "碰撞盒sm存FBX",
+                  "children": []
+                }
+              ],
+              "name": "PCG数据入库"
+            },
+            {
+              "name": "PCG网格打包",
+              "children": [
+                {
+                  "work_item_id": "stage2_5.fbx_to_geo",
+                  "automation_pattern": "agent",
+                  "children": [],
+                  "name": "FBX打包为主题GEO"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "PCG功能准备",
+          "children": [
+            {
+              "name": "布局功能适配",
+              "children": [
+                {
+                  "children": [],
+                  "work_item_id": "stage3_1.tile_size_adapt",
+                  "name": "模块尺寸适配",
+                  "automation_pattern": "human"
+                },
+                {
+                  "work_item_id": "stage3_1.road_width_adapt",
+                  "name": "路宽尺寸适配",
+                  "children": [],
+                  "automation_pattern": "human"
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage3_1.random_func_adapt",
+                  "automation_pattern": "human",
+                  "name": "随机功能适配"
+                },
+                {
+                  "name": "主题特有功能适配",
+                  "children": [],
+                  "work_item_id": "stage3_1.theme_specific_layout_adapt",
+                  "automation_pattern": "human"
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "work_item_id": "stage3_2.module_adapt",
+                  "children": [],
+                  "name": "模块适配",
+                  "automation_pattern": "human"
+                },
+                {
+                  "work_item_id": "stage3_2.dynamic_wall_adapt",
+                  "children": [],
+                  "name": "动态墙适配",
+                  "automation_pattern": "human"
+                },
+                {
+                  "children": [],
+                  "name": "道路适配",
+                  "automation_pattern": "human",
+                  "work_item_id": "stage3_2.road_adapt"
+                },
+                {
+                  "automation_pattern": "human",
+                  "name": "白盒适配",
+                  "children": [],
+                  "work_item_id": "stage3_2.white_box_adapt"
+                },
+                {
+                  "work_item_id": "stage3_2.black_box_adapt",
+                  "children": [],
+                  "name": "黑盒适配",
+                  "automation_pattern": "human"
+                },
+                {
+                  "automation_pattern": "human",
+                  "name": "远景适配",
+                  "work_item_id": "stage3_2.distant_adapt",
+                  "children": []
+                },
+                {
+                  "work_item_id": "stage3_2.collision_bp_adapt",
+                  "name": "模块碰撞BP适配",
+                  "children": []
+                },
+                {
+                  "name": "共享墙碰撞盒适配",
+                  "children": [],
+                  "work_item_id": "stage3_2.shared_wall_collision_adapt"
+                },
+                {
+                  "work_item_id": "stage3_2.nav_ground_adapt",
+                  "automation_pattern": "human",
+                  "name": "导航地面适配",
+                  "children": []
+                },
+                {
+                  "name": "环境BP适配",
+                  "children": [],
+                  "work_item_id": "stage3_2.env_bp_adapt",
+                  "automation_pattern": "human"
+                },
+                {
+                  "name": "主题特有功能适配",
+                  "work_item_id": "stage3_2.theme_specific_gen_adapt",
+                  "children": [],
+                  "automation_pattern": "human"
+                }
+              ],
+              "name": "生成功能适配"
+            }
+          ]
+        },
+        {
+          "children": [
+            {
+              "name": "主题名注册",
+              "automation_pattern": "agent",
+              "children": [],
+              "work_item_id": "stage4.theme_name_register"
+            },
+            {
+              "work_item_id": "stage4.hda_version_update",
+              "children": [],
+              "name": "HDA版本更新",
+              "automation_pattern": "agent"
+            },
+            {
+              "name": "主题环境球配置",
+              "children": [],
+              "work_item_id": "stage4.theme_env_sphere_config",
+              "automation_pattern": "agent"
+            },
+            {
+              "work_item_id": "stage4.theme_lighting_config",
+              "automation_pattern": "agent",
+              "name": "主题灯光配置",
+              "children": []
+            }
+          ],
+          "name": "引擎流程功能"
+        },
+        {
+          "children": [
+            {
+              "automation_pattern": "agent",
+              "name": "关卡文件夹生成确认",
+              "work_item_id": "stage5.level_folder_gen",
+              "children": []
+            },
+            {
+              "automation_pattern": "mixed",
+              "children": [],
+              "work_item_id": "stage5.work_level",
+              "name": "Work关卡",
+              "mixed_pattern": "D"
+            },
+            {
+              "mixed_pattern": "D",
+              "automation_pattern": "mixed",
+              "name": "序列关卡",
+              "work_item_id": "stage5.sequence_level",
+              "children": []
+            },
+            {
+              "mixed_pattern": "D",
+              "name": "美术资产放置",
+              "automation_pattern": "mixed",
+              "children": [],
+              "work_item_id": "stage5.art_asset_placement"
+            },
+            {
+              "mixed_pattern": "D",
+              "automation_pattern": "mixed",
+              "name": "环境灯光放置确认",
+              "children": [],
+              "work_item_id": "stage5.env_lighting_placement"
+            }
+          ],
+          "name": "引擎中生成确认"
+        }
+      ]
+    },
+    {
+      "nodes": [
+        {
+          "name": "资产准备",
+          "children": [
+            {
+              "children": [
+                {
+                  "name": "Start_Base",
+                  "work_item_id": "stage1.modules.start_base",
+                  "children": []
+                },
+                {
+                  "children": [],
+                  "name": "End_Huge",
+                  "work_item_id": "stage1.modules.end_huge"
+                },
+                {
+                  "name": "Area_Huge",
+                  "children": [],
+                  "work_item_id": "stage1.modules.area_huge"
+                },
+                {
+                  "work_item_id": "stage1.modules.area_base_1x1_1",
+                  "name": "Area_Base_1x1_1",
+                  "children": []
+                },
+                {
+                  "name": "Area_Base_1x1_3",
+                  "work_item_id": "stage1.modules.area_base_1x1_3",
+                  "children": []
+                },
+                {
+                  "children": [],
+                  "name": "Area_Base_1x1_5",
+                  "work_item_id": "stage1.modules.area_base_1x1_5"
+                },
+                {
+                  "name": "Area_Base_1x1_7",
+                  "work_item_id": "stage1.modules.area_base_1x1_7",
+                  "children": []
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage1.modules.area_base_1x1_15",
+                  "name": "Area_Base_1x1_15"
+                }
+              ],
+              "name": "模块（Map / BP）"
+            },
+            {
+              "name": "额外模型/BP",
+              "children": [
+                {
+                  "name": "动态墙BP",
+                  "work_item_id": "stage1.extra_bp.dynamic_wall_bp",
+                  "children": []
+                },
+                {
+                  "work_item_id": "stage1.extra_bp.dynamic_wall_bp_white",
+                  "children": [],
+                  "name": "动态墙BP对应白模"
+                },
+                {
+                  "name": "地板对应的导航白模",
+                  "work_item_id": "stage1.extra_bp.floor_nav_white",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "work_item_id": "stage1.env_bp.directional_light",
+                  "children": [],
+                  "name": "平行光"
+                },
+                {
+                  "children": [],
+                  "name": "大气雾",
+                  "work_item_id": "stage1.env_bp.atmospheric_fog"
+                },
+                {
+                  "work_item_id": "stage1.env_bp.reflection_capture",
+                  "children": [],
+                  "name": "反射球"
+                }
+              ],
+              "name": "环境BP"
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "name": "单模块json文件",
+                  "work_item_id": "stage1.module_data.single_module_json"
+                },
+                {
+                  "name": "子主题模块统计json文件",
+                  "work_item_id": "stage1.module_data.stats_json",
+                  "children": []
+                }
+              ],
+              "name": "模块数据"
+            },
+            {
+              "name": "资产表格",
+              "children": [
+                {
+                  "work_item_id": "stage1.asset_tables.placement",
+                  "name": "放置用资产表",
+                  "children": []
+                },
+                {
+                  "name": "BP碰撞排除资产表",
+                  "children": [],
+                  "work_item_id": "stage1.asset_tables.collision_excluded"
+                },
+                {
+                  "name": "地板与导航白模对应资产表",
+                  "work_item_id": "stage1.asset_tables.nav_ground",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "PCG数据准备",
+          "children": [
+            {
+              "children": [
+                {
+                  "work_item_id": "stage2_1.parent_theme_name",
+                  "name": "父主题名确认",
+                  "children": []
+                },
+                {
+                  "name": "子主题名确认",
+                  "children": [],
+                  "work_item_id": "stage2_1.sub_theme_name"
+                },
+                {
+                  "name": "引擎资产文件夹路径确认",
+                  "work_item_id": "stage2_1.engine_asset_folder",
+                  "children": []
+                },
+                {
+                  "name": "房间尺寸确认",
+                  "work_item_id": "stage2_1.tile_size",
+                  "children": []
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage2_1.road_width",
+                  "name": "路宽尺寸确认"
+                },
+                {
+                  "name": "有无远景确认",
+                  "children": [],
+                  "work_item_id": "stage2_1.distant_tile"
+                },
+                {
+                  "name": "有无黑盒确认",
+                  "children": [],
+                  "work_item_id": "stage2_1.black_box"
+                },
+                {
+                  "work_item_id": "stage2_1.staticmesh",
+                  "children": [],
+                  "name": "主题静态网格资产确认"
+                },
+                {
+                  "name": "主题模块BP确认",
+                  "children": [],
+                  "work_item_id": "stage2_1.module_bp"
+                },
+                {
+                  "children": [],
+                  "name": "模块map确认",
+                  "work_item_id": "stage2_1.module_map"
+                },
+                {
+                  "name": "单模块json文件确认",
+                  "work_item_id": "stage2_1.single_module_json",
+                  "children": []
+                },
+                {
+                  "work_item_id": "stage2_1.bp_statistics_json",
+                  "name": "子主题模块统计json文件确认",
+                  "children": []
+                },
+                {
+                  "work_item_id": "stage2_1.common_assets",
+                  "children": [],
+                  "name": "通用资产确认"
+                }
+              ],
+              "name": "主题确认"
+            },
+            {
+              "children": [
+                {
+                  "work_item_id": "stage2_2.bp_statistics_file",
+                  "children": [],
+                  "name": "BP模块统计文件"
+                },
+                {
+                  "children": [],
+                  "name": "主题文件配置写入",
+                  "work_item_id": "stage2_2.theme_config_write"
+                },
+                {
+                  "name": "主题资产进资产表文件",
+                  "work_item_id": "stage2_2.placement_table",
+                  "children": []
+                },
+                {
+                  "work_item_id": "stage2_2.common_assets_table",
+                  "children": [],
+                  "name": "通用资产进资产表文件 "
+                },
+                {
+                  "name": "BP碰撞排除资产表检查",
+                  "children": [],
+                  "work_item_id": "stage2_2.collision_excluded_table"
+                },
+                {
+                  "name": "导航地板与白模对应资产表检查",
+                  "work_item_id": "stage2_2.nav_ground_table",
+                  "children": []
+                },
+                {
+                  "work_item_id": "stage2_2.assets_groups_csv",
+                  "children": [],
+                  "name": "资产组表文件"
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage2_2.type_tree_csv",
+                  "name": "资产种类树文件"
+                }
+              ],
+              "name": "PCG数据准备"
+            },
+            {
+              "name": "自动生成资产",
+              "children": [
+                {
+                  "children": [],
+                  "work_item_id": "stage2_3.module_bp_to_sm",
+                  "name": "模块BP转SM"
+                },
+                {
+                  "name": "动态墙BP转SM",
+                  "work_item_id": "stage2_3.dynamic_wall_bp_to_sm",
+                  "children": []
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage2_3.distant_bp_to_sm",
+                  "name": "远景BP转SM"
+                },
+                {
+                  "work_item_id": "stage2_3.black_box_bp_gen",
+                  "children": [],
+                  "name": "模块黑盒BP生成"
+                },
+                {
+                  "name": "黑盒BP转SM",
+                  "work_item_id": "stage2_3.black_box_bp_to_sm",
+                  "children": []
+                },
+                {
+                  "work_item_id": "stage2_3.white_box_bp_gen",
+                  "children": [],
+                  "name": "模块白盒BP生成"
+                },
+                {
+                  "children": [],
+                  "name": "白盒BP转SM",
+                  "work_item_id": "stage2_3.white_box_bp_to_sm"
+                },
+                {
+                  "children": [],
+                  "name": "碰撞BP生成",
+                  "work_item_id": "stage2_3.collision_bp_gen"
+                },
+                {
+                  "work_item_id": "stage2_3.collision_bp_to_sm",
+                  "children": [],
+                  "name": "碰撞BP转SM"
+                }
+              ]
+            },
+            {
+              "name": "PCG数据入库",
+              "children": [
+                {
+                  "children": [],
+                  "name": "放置用资产表文件",
+                  "work_item_id": "stage2_4.placement_table_export"
+                },
+                {
+                  "name": "BP碰撞排除资产表",
+                  "work_item_id": "stage2_4.collision_excluded_export",
+                  "children": []
+                },
+                {
+                  "name": "导航地板与白模对应资产表",
+                  "children": [],
+                  "work_item_id": "stage2_4.nav_ground_export"
+                },
+                {
+                  "children": [],
+                  "name": "资产组表文件",
+                  "work_item_id": "stage2_4.assets_groups_export"
+                },
+                {
+                  "work_item_id": "stage2_4.sm_fbx",
+                  "name": "sm存FBX",
+                  "children": []
+                },
+                {
+                  "name": "bpsm存FBX",
+                  "children": [],
+                  "work_item_id": "stage2_4.bpsm_fbx"
+                },
+                {
+                  "name": "动态墙bpsm存FBX",
+                  "children": [],
+                  "work_item_id": "stage2_4.dynamic_wall_bpsm_fbx"
+                },
+                {
+                  "work_item_id": "stage2_4.white_box_sm_fbx",
+                  "children": [],
+                  "name": "白盒sm存FBX"
+                },
+                {
+                  "work_item_id": "stage2_4.black_box_sm_fbx",
+                  "children": [],
+                  "name": "黑盒sm存FBX"
+                },
+                {
+                  "name": "碰撞盒sm存FBX",
+                  "work_item_id": "stage2_4.collision_sm_fbx",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "work_item_id": "stage2_5.fbx_to_geo",
+                  "name": "FBX打包为主题GEO"
+                }
+              ],
+              "name": "PCG网格打包"
+            }
+          ]
+        },
+        {
+          "name": "PCG功能准备",
+          "children": [
+            {
+              "name": "布局功能适配",
+              "children": [
+                {
+                  "children": [],
+                  "work_item_id": "stage3_1.tile_size_adapt",
+                  "name": "模块尺寸适配"
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage3_1.road_width_adapt",
+                  "name": "路宽尺寸适配"
+                },
+                {
+                  "work_item_id": "stage3_1.random_func_adapt",
+                  "children": [],
+                  "name": "随机功能适配"
+                },
+                {
+                  "name": "主题特有功能适配",
+                  "children": [],
+                  "work_item_id": "stage3_1.theme_specific_layout_adapt"
+                }
+              ]
+            },
+            {
+              "children": [
+                {
+                  "children": [],
+                  "work_item_id": "stage3_2.module_adapt",
+                  "name": "模块适配"
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage3_2.dynamic_wall_adapt",
+                  "name": "动态墙适配"
+                },
+                {
+                  "work_item_id": "stage3_2.road_adapt",
+                  "children": [],
+                  "name": "道路适配"
+                },
+                {
+                  "work_item_id": "stage3_2.white_box_adapt",
+                  "children": [],
+                  "name": "白盒适配"
+                },
+                {
+                  "name": "黑盒适配",
+                  "work_item_id": "stage3_2.black_box_adapt",
+                  "children": []
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage3_2.distant_adapt",
+                  "name": "远景适配"
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage3_2.collision_bp_adapt",
+                  "name": "模块碰撞BP适配"
+                },
+                {
+                  "work_item_id": "stage3_2.shared_wall_collision_adapt",
+                  "name": "共享墙碰撞盒适配",
+                  "children": []
+                },
+                {
+                  "children": [],
+                  "name": "导航地面适配",
+                  "work_item_id": "stage3_2.nav_ground_adapt"
+                },
+                {
+                  "children": [],
+                  "name": "环境BP适配",
+                  "work_item_id": "stage3_2.env_bp_adapt"
+                },
+                {
+                  "children": [],
+                  "work_item_id": "stage3_2.theme_specific_gen_adapt",
+                  "name": "主题特有功能适配"
+                }
+              ],
+              "name": "生成功能适配"
+            }
+          ]
+        },
+        {
+          "children": [
+            {
+              "children": [],
+              "name": "主题名注册",
+              "work_item_id": "stage4.theme_name_register"
+            },
+            {
+              "work_item_id": "stage4.hda_version_update",
+              "children": [],
+              "name": "HDA版本更新"
+            },
+            {
+              "work_item_id": "stage4.theme_env_sphere_config",
+              "children": [],
+              "name": "主题环境球配置"
+            },
+            {
+              "name": "主题灯光配置",
+              "children": [],
+              "work_item_id": "stage4.theme_lighting_config"
+            }
+          ],
+          "name": "引擎流程功能"
+        },
+        {
+          "children": [
+            {
+              "name": "关卡文件夹生成确认",
+              "work_item_id": "stage5.level_folder_gen",
+              "children": []
+            },
+            {
+              "name": "Work关卡",
+              "children": [],
+              "work_item_id": "stage5.work_level"
+            },
+            {
+              "name": "序列关卡",
+              "work_item_id": "stage5.sequence_level",
+              "children": []
+            },
+            {
+              "children": [],
+              "name": "美术资产放置",
+              "work_item_id": "stage5.art_asset_placement"
+            },
+            {
+              "name": "环境灯光放置确认",
+              "work_item_id": "stage5.env_lighting_placement",
+              "children": []
+            }
+          ],
+          "name": "引擎中生成确认"
+        }
+      ],
+      "name": "混合式通用模板",
+      "id": "b2ccfbd7-cf98-443e-8242-dc0c75e1c22b"
+    },
+    {
+      "id": "bfba303a-7805-4416-83ec-c9c516e3e39c",
+      "name": "收藏家古堡 模板",
+      "nodes": [
+        {
+          "name": "资产准备",
+          "children": [
+            {
+              "name": "模块（Map / BP）",
+              "children": [
+                {
+                  "name": "Start_Base",
+                  "children": []
+                },
+                {
+                  "name": "End_Huge",
+                  "children": []
+                },
+                {
+                  "name": "Area_Huge",
+                  "children": []
+                },
+                {
+                  "name": "Area_Base_1x1_1",
+                  "children": []
+                },
+                {
+                  "name": "Area_Base_1x1_3",
+                  "children": []
+                },
+                {
+                  "name": "Area_Base_1x1_5",
+                  "children": []
+                },
+                {
+                  "name": "Area_Base_1x1_7",
+                  "children": []
+                },
+                {
+                  "name": "Area_Base_1x1_15",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "额外模型/BP",
+              "children": [
+                {
+                  "name": "动态墙BP",
+                  "children": []
+                },
+                {
+                  "name": "动态墙BP对应白模",
+                  "children": []
+                },
+                {
+                  "name": "地板对应的导航白模",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "环境BP",
+              "children": [
+                {
+                  "name": "平行光",
+                  "children": []
+                },
+                {
+                  "name": "大气雾",
+                  "children": []
+                },
+                {
+                  "name": "反射球",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "模块数据",
+              "children": [
+                {
+                  "name": "单模块json文件",
+                  "children": []
+                },
+                {
+                  "name": "子主题模块统计json文件",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "资产表格",
+              "children": [
+                {
+                  "name": "放置用资产表",
+                  "children": []
+                },
+                {
+                  "name": "BP碰撞排除资产表",
+                  "children": []
+                },
+                {
+                  "name": "地板与导航白模对应资产表",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "PCG数据准备",
+          "children": [
+            {
+              "name": "主题确认",
+              "children": [
+                {
+                  "name": "父主题名确认",
+                  "children": []
+                },
+                {
+                  "name": "子主题名确认",
+                  "children": []
+                },
+                {
+                  "name": "引擎资产文件夹路径确认",
+                  "children": []
+                },
+                {
+                  "name": "房间尺寸确认",
+                  "children": []
+                },
+                {
+                  "name": "路宽尺寸确认",
+                  "children": []
+                },
+                {
+                  "name": "有无远景确认",
+                  "children": []
+                },
+                {
+                  "name": "有无黑盒确认",
+                  "children": []
+                },
+                {
+                  "name": "主题静态网格资产确认",
+                  "children": []
+                },
+                {
+                  "name": "主题模块BP确认",
+                  "children": []
+                },
+                {
+                  "name": "模块map确认",
+                  "children": []
+                },
+                {
+                  "name": "单模块json文件确认",
+                  "children": []
+                },
+                {
+                  "name": "子主题模块统计json文件确认",
+                  "children": []
+                },
+                {
+                  "name": "通用资产确认",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "PCG数据准备",
+              "children": [
+                {
+                  "name": "BP模块统计文件",
+                  "children": []
+                },
+                {
+                  "name": "主题文件配置写入",
+                  "children": []
+                },
+                {
+                  "name": "主题资产进资产表文件",
+                  "children": []
+                },
+                {
+                  "name": "通用资产进资产表文件 ",
+                  "children": []
+                },
+                {
+                  "name": "BP碰撞排除资产表检查",
+                  "children": []
+                },
+                {
+                  "name": "导航地板与白模对应资产表检查",
+                  "children": []
+                },
+                {
+                  "name": "资产组表文件",
+                  "children": []
+                },
+                {
+                  "name": "资产种类树文件",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "自动生成资产",
+              "children": [
+                {
+                  "name": "模块BP转SM",
+                  "children": []
+                },
+                {
+                  "name": "动态墙BP转SM",
+                  "children": []
+                },
+                {
+                  "name": "远景BP转SM",
+                  "children": []
+                },
+                {
+                  "name": "模块黑盒BP生成",
+                  "children": []
+                },
+                {
+                  "name": "黑盒BP转SM",
+                  "children": []
+                },
+                {
+                  "name": "模块白盒BP生成",
+                  "children": []
+                },
+                {
+                  "name": "白盒BP转SM",
+                  "children": []
+                },
+                {
+                  "name": "碰撞BP生成",
+                  "children": []
+                },
+                {
+                  "name": "碰撞BP转SM",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "PCG数据入库",
+              "children": [
+                {
+                  "name": "放置用资产表文件",
+                  "children": []
+                },
+                {
+                  "name": "BP碰撞排除资产表",
+                  "children": []
+                },
+                {
+                  "name": "导航地板与白模对应资产表",
+                  "children": []
+                },
+                {
+                  "name": "资产组表文件",
+                  "children": []
+                },
+                {
+                  "name": "sm存FBX",
+                  "children": []
+                },
+                {
+                  "name": "bpsm存FBX",
+                  "children": []
+                },
+                {
+                  "name": "动态墙bpsm存FBX",
+                  "children": []
+                },
+                {
+                  "name": "白盒sm存FBX",
+                  "children": []
+                },
+                {
+                  "name": "黑盒sm存FBX",
+                  "children": []
+                },
+                {
+                  "name": "碰撞盒sm存FBX",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "PCG网格打包",
+              "children": [
+                {
+                  "name": "FBX打包为主题GEO",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "PCG功能准备",
+          "children": [
+            {
+              "name": "布局功能适配",
+              "children": [
+                {
+                  "name": "模块尺寸适配",
+                  "children": []
+                },
+                {
+                  "name": "路宽尺寸适配",
+                  "children": []
+                },
+                {
+                  "name": "随机功能适配",
+                  "children": []
+                },
+                {
+                  "name": "主题特有功能适配",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "生成功能适配",
+              "children": [
+                {
+                  "name": "模块适配",
+                  "children": []
+                },
+                {
+                  "name": "动态墙适配",
+                  "children": []
+                },
+                {
+                  "name": "道路适配",
+                  "children": []
+                },
+                {
+                  "name": "白盒适配",
+                  "children": []
+                },
+                {
+                  "name": "黑盒适配",
+                  "children": []
+                },
+                {
+                  "name": "远景适配",
+                  "children": []
+                },
+                {
+                  "name": "模块碰撞BP适配",
+                  "children": []
+                },
+                {
+                  "name": "共享墙碰撞盒适配",
+                  "children": []
+                },
+                {
+                  "name": "导航地面适配",
+                  "children": []
+                },
+                {
+                  "name": "环境BP适配",
+                  "children": []
+                },
+                {
+                  "name": "主题特有功能适配",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "引擎流程功能",
+          "children": [
+            {
+              "name": "主题名注册",
+              "children": []
+            },
+            {
+              "name": "HDA版本更新",
+              "children": []
+            },
+            {
+              "name": "主题环境球配置",
+              "children": []
+            },
+            {
+              "name": "主题灯光配置",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "引擎中生成确认",
+          "children": [
+            {
+              "name": "关卡文件夹生成确认",
+              "children": []
+            },
+            {
+              "name": "Work关卡",
+              "children": []
+            },
+            {
+              "name": "序列关卡",
+              "children": []
+            },
+            {
+              "name": "美术资产放置",
+              "children": []
+            },
+            {
+              "name": "环境灯光放置确认",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "updated_at": {
+    "_seconds": 1789903163,
+    "_nanoseconds": 800000000
+  }
+}
