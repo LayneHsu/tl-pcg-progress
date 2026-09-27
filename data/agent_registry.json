@@ -1,0 +1,486 @@
+{
+  "$schema_doc": "docs/PCG_AI_Agent自动化方案.md §2.1",
+  "version": 1,
+  "last_updated": "2026-05-12",
+  "_notes": [
+    "v0.1: Phase 1 第一批 5 个 Scanner Agent 注册条目",
+    "Scanner = 只读扫描，无副作用，不需 TA confirm，可定时/手动触发",
+    "handles_work_items 中的 ID 暂用计划命名，待 1.02 work_item_dependencies.json 落地后正式对齐",
+    "ID 命名规范：{stage_key}.{leaf_key}（详见文档3 §3.2）；stage2_1 全组都是'确认'性质，不重复后缀",
+    "success_criteria：定义看板把工作项标绿的判定条件，由 daemon 解析 Agent 输出后比对",
+    "v0.2 (Phase 2A Step 1 audit P1-3): 加 8 executor 占位, implementation_version='not_yet_implemented', Phase 2C 实施时改 1.0.0"
+  ],
+  "agents": [
+    {
+      "id": "scanner.theme_config_check",
+      "category": "scanner",
+      "runs_on": "node",
+      "implementation_version": "1.0.0",
+      "description": "检查 Theme_Configs.json 中指定主题的 7 个必填字段（Theme_Name_Parent / Theme_Name / Unit_Size / Tile_Size / Road_Width / Black_Box / Distant_Tile）是否齐全",
+      "handles_work_items": [
+        "stage2_1.parent_theme_name",
+        "stage2_1.sub_theme_name",
+        "stage2_1.tile_size",
+        "stage2_1.road_width",
+        "stage2_1.distant_tile",
+        "stage2_1.black_box",
+        "stage2_2.theme_config_write",
+        "stage4.theme_name_register"
+      ],
+      "automation_pattern": "agent",
+      "trigger_endpoint": "node://scanner/theme_config_check",
+      "input_schema": {
+        "theme_short": "string"
+      },
+      "output_schema": {
+        "exists": "boolean",
+        "fields_present": {
+          "Theme_Name_Parent": "boolean",
+          "Theme_Name": "boolean",
+          "Unit_Size": "boolean",
+          "Tile_Size": "boolean",
+          "Road_Width": "boolean",
+          "Black_Box": "boolean",
+          "Distant_Tile": "boolean"
+        },
+        "missing_fields": "array<string>",
+        "field_values": "object"
+      },
+      "success_criteria": {
+        "stage2_1.parent_theme_name": "fields_present.Theme_Name_Parent == true && field_values.Theme_Name_Parent != ''",
+        "stage2_1.sub_theme_name": "fields_present.Theme_Name == true && field_values.Theme_Name != ''",
+        "stage2_1.tile_size": "fields_present.Tile_Size == true && field_values.Tile_Size > 0",
+        "stage2_1.road_width": "fields_present.Road_Width == true && field_values.Road_Width > 0",
+        "stage2_1.distant_tile": "fields_present.Distant_Tile == true && field_values.Distant_Tile in [0, 1]",
+        "stage2_1.black_box": "fields_present.Black_Box == true && field_values.Black_Box in [0, 1]",
+        "stage2_2.theme_config_write": "exists == true && missing_fields.length == 0",
+        "stage4.theme_name_register": "exists == true"
+      },
+      "side_effects": "none",
+      "rollback_strategy": "none",
+      "estimated_duration_sec": 1,
+      "requires_confirm": false,
+      "data_source_paths": {
+        "dev": "E:/P4_WorkSpace/TorchLight_MainLineWithUGS/DevTools/XDVerse_PCG/XDVerse/Project_Data/P_TorchLight/Configs/Global/Json/Theme_Configs.json",
+        "release": "F:/XD_Work/Houdini/Projects/Working_Project/XDVerse/Project_Data/P_TorchLight/Configs/Global/Json/Theme_Configs.json"
+      }
+    },
+    {
+      "id": "scanner.file_existence",
+      "category": "scanner",
+      "runs_on": "node",
+      "implementation_version": "1.0.0",
+      "description": "通用文件存在性扫描：批量检查指定路径列表，返回每个文件的存在性 / 大小 / 修改时间。可用于 JSON / FBX / bgeo / CSV 等任意文件类型。支持 paths 单文件列表 或 glob_pattern 模式（二选一）",
+      "handles_work_items": [
+        "stage2_1.single_module_json",
+        "stage2_1.bp_statistics_json",
+        "stage2_2.bp_statistics_file",
+        "stage2_2.assets_groups_csv",
+        "stage2_4.placement_table_export",
+        "stage2_4.collision_excluded_export",
+        "stage2_4.nav_ground_export",
+        "stage2_4.assets_groups_export",
+        "stage2_4.sm_fbx",
+        "stage2_4.bpsm_fbx",
+        "stage2_4.dynamic_wall_bpsm_fbx",
+        "stage2_4.white_box_sm_fbx",
+        "stage2_4.black_box_sm_fbx",
+        "stage2_4.collision_sm_fbx",
+        "stage2_5.fbx_to_geo"
+      ],
+      "automation_pattern": "agent",
+      "trigger_endpoint": "node://scanner/file_existence",
+      "input_schema": {
+        "mode": "enum<'paths' | 'glob'>",
+        "paths": "array<string> (mode='paths' 时必填)",
+        "glob_pattern": "string (mode='glob' 时必填)",
+        "min_count": "integer (optional, 默认 1，glob 模式下匹配数 < min_count 视为缺失)"
+      },
+      "output_schema_paths_mode": {
+        "results": "array<{ path: string, exists: boolean, size_bytes: integer, modified_iso: string }>",
+        "summary": {
+          "total": "integer",
+          "found": "integer",
+          "missing": "integer"
+        }
+      },
+      "output_schema_glob_mode": {
+        "matched_files": "array<{ path: string, size_bytes: integer, modified_iso: string }>",
+        "match_count": "integer",
+        "meets_min_count": "boolean"
+      },
+      "success_criteria": {
+        "default": "(mode == 'paths' && summary && summary.missing == 0) || (mode == 'glob' && meets_min_count == true)"
+      },
+      "side_effects": "none",
+      "rollback_strategy": "none",
+      "estimated_duration_sec": 2,
+      "requires_confirm": false
+    },
+    {
+      "id": "scanner.ue_asset_existence",
+      "category": "scanner",
+      "runs_on": "ue_python",
+      "implementation": "v8_framework.core.agent_runtime.scanners.ue_asset_existence",
+      "implementation_version": "1.0.0",
+      "description": "查询 UE Asset Registry，检查指定路径下资产是否存在 + 列举资产清单。支持单资产 / 目录递归两种查询",
+      "handles_work_items": [
+        "stage2_1.engine_asset_folder",
+        "stage2_1.staticmesh",
+        "stage2_1.module_bp",
+        "stage2_1.module_map",
+        "stage4.theme_env_sphere_config",
+        "stage4.theme_lighting_config",
+        "stage5.level_folder_gen"
+      ],
+      "automation_pattern": "agent",
+      "trigger_endpoint": "ue_python://scanner/ue_asset_existence",
+      "input_schema": {
+        "asset_paths_or_folders": "array<string>",
+        "recursive": "boolean (默认 true)",
+        "asset_class_filter": "string (optional, e.g. 'StaticMesh' | 'Blueprint' | 'World')",
+        "min_count": "integer (optional, 默认 1)"
+      },
+      "output_schema": {
+        "directory_exists": "boolean",
+        "asset_count": "integer",
+        "asset_list": "array<{ path: string, name: string, class: string }>",
+        "missing_paths": "array<string>",
+        "meets_min_count": "boolean"
+      },
+      "success_criteria": {
+        "default": "directory_exists == true && meets_min_count == true && missing_paths.length == 0"
+      },
+      "side_effects": "none",
+      "rollback_strategy": "none",
+      "estimated_duration_sec": 3,
+      "requires_confirm": false,
+      "_implementation_hints": [
+        "使用 unreal.AssetRegistryHelpers.get_asset_registry()",
+        "对目录路径用 get_assets_by_path(path, recursive=True)",
+        "对单资产用 does_asset_exist(path)",
+        "asset_class_filter 用 get_assets_by_class(class_name)"
+      ]
+    },
+    {
+      "id": "scanner.datatable_content",
+      "category": "scanner",
+      "runs_on": "ue_python",
+      "implementation": "v8_framework.core.agent_runtime.scanners.datatable_content",
+      "implementation_version": "1.0.0-ue4.26-fallback",
+      "description": "扫描 UE DataTable 行数 + 资产路径 + 缺失资产，用于判断 DT 是否填充完整",
+      "handles_work_items": [
+        "stage2_2.placement_table",
+        "stage2_2.collision_excluded_table",
+        "stage2_2.nav_ground_table"
+      ],
+      "automation_pattern": "agent",
+      "trigger_endpoint": "ue_python://scanner/datatable_content",
+      "input_schema": {
+        "datatable_path": "string",
+        "asset_path_field_name": "string (默认 'Asset_Path'，nav_ground 表用 'Asset_Path_A')",
+        "min_row_count": "integer (默认 1)",
+        "verify_assets_exist": "boolean (默认 true，会逐行校验 Asset_Path 字段指向的资产是否真实存在)"
+      },
+      "output_schema": {
+        "exists": "boolean",
+        "row_count": "integer",
+        "row_struct_path": "string",
+        "asset_paths": "array<string>",
+        "missing_assets": "array<string>",
+        "meets_min_row_count": "boolean"
+      },
+      "success_criteria": {
+        "default": "exists == true && meets_min_row_count == true && missing_assets.length == 0"
+      },
+      "side_effects": "none",
+      "rollback_strategy": "none",
+      "estimated_duration_sec": 2,
+      "requires_confirm": false,
+      "_implementation_hints": [
+        "使用 unreal.DataTableFunctionLibrary.get_data_table_row_names",
+        "用 get_data_table_row 读取每行字段",
+        "对 Asset_Path 字段用 EditorAssetLibrary.does_asset_exist 验证",
+        "DT_Nav_Ground_Assets 表 Asset_Path 字段名为 Asset_Path_A 和 Asset_Path_B（两列都需校验）"
+      ]
+    },
+    {
+      "id": "scanner.umap_actor_count",
+      "category": "scanner",
+      "runs_on": "ue_python",
+      "implementation": "v8_framework.core.agent_runtime.scanners.umap_actor_count",
+      "implementation_version": "1.0.0",
+      "description": "加载指定 .umap 关卡，统计内部 Actor 数量分类（StaticMeshActor / Light / 蓝图实例 等），用于阶段 5 的关卡内容验证",
+      "handles_work_items": [
+        "stage5.work_level",
+        "stage5.sequence_level",
+        "stage5.art_asset_placement",
+        "stage5.env_lighting_placement"
+      ],
+      "automation_pattern": "agent",
+      "trigger_endpoint": "ue_python://scanner/umap_actor_count",
+      "input_schema": {
+        "umap_path": "string",
+        "actor_class_groups": "array<string> (optional, e.g. ['StaticMeshActor', 'PointLight', 'Blueprint'])",
+        "min_total_actor_count": "integer (optional, 默认 1)",
+        "expected_env_bp_class_pattern": "string (optional, 默认 'BP_Env_*_Light')"
+      },
+      "output_schema": {
+        "exists": "boolean",
+        "total_actor_count": "integer",
+        "by_class": "object<class_name, count>",
+        "env_bp_present": "boolean",
+        "env_bp_path": "string"
+      },
+      "success_criteria": {
+        "stage5.work_level": "exists == true && total_actor_count > 0",
+        "stage5.sequence_level": "exists == true",
+        "stage5.art_asset_placement": "by_class.StaticMeshActor > 0 || by_class.HoudiniAssetActor > 0",
+        "stage5.env_lighting_placement": "env_bp_present == true"
+      },
+      "side_effects": "none",
+      "rollback_strategy": "none",
+      "estimated_duration_sec": 5,
+      "requires_confirm": false,
+      "_implementation_hints": [
+        "用 EditorLevelLibrary.load_level 加载 umap",
+        "用 EditorLevelLibrary.get_all_level_actors 列举",
+        "按 actor.get_class().get_name() 分类计数",
+        "查找 BP_Env_*_Light 类的 actor 标记 env_bp_present"
+      ]
+    },
+    {
+      "id": "executor.fill_pcg_assets_table",
+      "category": "executor",
+      "runs_on": "ue_python",
+      "implementation_version": "not_yet_implemented",
+      "description": "包装 datatable_filler.business.fill_pcg_assets_table — 自动按主题派生 BP 路径并预填 DT_PCG_Assets_{theme}, mixed B 模式跑完后写 review_url 待 TA 通过/重做",
+      "handles_work_items": [
+        "stage2_2.placement_table"
+      ],
+      "automation_pattern": "mixed",
+      "mixed_pattern": "B",
+      "trigger_endpoint": "ue_python://executor/fill_pcg_assets_table",
+      "input_schema": {
+        "theme_short": "string",
+        "source_paths": "array<string>"
+      },
+      "output_schema": {
+        "added_rows": "integer",
+        "review_url": "string"
+      },
+      "success_criteria": {
+        "stage2_2.placement_table": "added_rows > 0"
+      },
+      "side_effects": "writes UE DataTable + Firestore review entry",
+      "rollback_strategy": "asset_backup",
+      "estimated_duration_sec": 30,
+      "requires_confirm": true,
+      "data_source_paths": {}
+    },
+    {
+      "id": "executor.export_pcg_dt_to_json",
+      "category": "executor",
+      "runs_on": "ue_python",
+      "implementation_version": "1.0.0-phase2a-step3",
+      "_phase2a_step3_scope": "仅 dt_type='pcg_assets' 覆盖 stage2_4.placement_table_export. collision_excluded_export + nav_ground_export 在 Phase 2C 加 dt_type='excluded'/'nav_ground' 时一并启用 (届时改 input_schema.dt_type + handles_work_items 同步扩)",
+      "description": "包装 datatable_filler.run_export_to_json — 把 DT_PCG_Assets 表导出为 JSON. Phase 2A Step 3 仅实现 pcg_assets, Phase 2C 扩到 excluded / nav_ground.",
+      "handles_work_items": [
+        "stage2_4.placement_table_export"
+      ],
+      "automation_pattern": "agent",
+      "trigger_endpoint": "ue_python://executor/export_pcg_dt_to_json",
+      "input_schema": {
+        "theme_short": "string",
+        "dt_type": "enum: pcg_assets"
+      },
+      "output_schema": {
+        "json_path": "string",
+        "row_count": "integer"
+      },
+      "success_criteria": {
+        "stage2_4.placement_table_export": "row_count > 0"
+      },
+      "side_effects": "writes JSON file to disk",
+      "rollback_strategy": "file_backup",
+      "estimated_duration_sec": 5,
+      "requires_confirm": true,
+      "data_source_paths": {}
+    },
+    {
+      "id": "executor.batch_export_fbx",
+      "category": "executor",
+      "runs_on": "ue_python",
+      "implementation_version": "not_yet_implemented",
+      "description": "包装 datatable_filler.run_batch_export_fbx — 把 DT 行内引用的 SM 资产批量导出为 FBX",
+      "handles_work_items": [
+        "stage2_4.fbx_main",
+        "stage2_4.fbx_black_box",
+        "stage2_4.fbx_dynamic_wall"
+      ],
+      "automation_pattern": "agent",
+      "trigger_endpoint": "ue_python://executor/batch_export_fbx",
+      "input_schema": {
+        "theme_short": "string",
+        "dt_type": "enum: main|black_box|dynamic_wall"
+      },
+      "output_schema": {
+        "exported_files": "array<string>",
+        "failed": "array<string>"
+      },
+      "success_criteria": {
+        "stage2_4.fbx_main": "exported_files.length > 0 && failed.length == 0"
+      },
+      "side_effects": "writes FBX files to disk",
+      "rollback_strategy": "file_backup",
+      "estimated_duration_sec": 60,
+      "requires_confirm": true,
+      "data_source_paths": {}
+    },
+    {
+      "id": "executor.bp_to_sm",
+      "category": "executor",
+      "runs_on": "ue_python",
+      "implementation_version": "not_yet_implemented",
+      "description": "包装 BP_SM_Utils.merge_selected_bp_assets_to_sm_assets (改造后接受 bp_paths 入参, 不依赖 Content Browser 选中)",
+      "handles_work_items": [
+        "stage2_3.module_bp_to_sm",
+        "stage2_3.black_box_bp_to_sm",
+        "stage2_3.dynamic_wall_bp_to_sm"
+      ],
+      "automation_pattern": "agent",
+      "trigger_endpoint": "ue_python://executor/bp_to_sm",
+      "input_schema": {
+        "bp_paths": "array<string>"
+      },
+      "output_schema": {
+        "generated_sm": "array<string>"
+      },
+      "success_criteria": {
+        "stage2_3.module_bp_to_sm": "generated_sm.length > 0"
+      },
+      "side_effects": "creates UE StaticMesh assets",
+      "rollback_strategy": "asset_backup",
+      "estimated_duration_sec": 30,
+      "requires_confirm": true,
+      "data_source_paths": {}
+    },
+    {
+      "id": "executor.run_hda_generator",
+      "category": "executor",
+      "runs_on": "ue_python",
+      "implementation_version": "not_yet_implemented",
+      "description": "包装 bp_black_box / white_box / nav_box generator (统一 generator_type 入参) — UE 内 Houdini Engine plugin 跑 HDA",
+      "handles_work_items": [
+        "stage2_3.black_box_bp",
+        "stage2_3.white_box_bp",
+        "stage2_3.nav_box_bp"
+      ],
+      "automation_pattern": "agent",
+      "trigger_endpoint": "ue_python://executor/run_hda_generator",
+      "input_schema": {
+        "generator_type": "enum: black_box|white_box|nav_box",
+        "bp_paths": "array<string>",
+        "theme_short": "string"
+      },
+      "output_schema": {
+        "generated_assets": "array<string>"
+      },
+      "success_criteria": {
+        "stage2_3.black_box_bp": "generated_assets.length > 0"
+      },
+      "side_effects": "creates UE BP/SM assets via HDA cook",
+      "rollback_strategy": "asset_backup",
+      "estimated_duration_sec": 120,
+      "requires_confirm": true,
+      "data_source_paths": {}
+    },
+    {
+      "id": "executor.houdini_fbx_pack",
+      "category": "executor",
+      "runs_on": "hython",
+      "implementation_version": "not_yet_implemented",
+      "description": "跨进程: subprocess 起 hython 跑 Xdv_CCK_FBX_Batch HDA — Houdini-native 任务, 输入 FBX 目录输出 .bgeo 文件 (UE 不识别 bgeo, 不在 UE Houdini Engine 内跑)",
+      "handles_work_items": [
+        "stage2_5.bgeo_pack"
+      ],
+      "automation_pattern": "agent",
+      "trigger_endpoint": "hython://executor/houdini_fbx_pack",
+      "input_schema": {
+        "theme_short": "string"
+      },
+      "output_schema": {
+        "bgeo_path": "string",
+        "mesh_count": "integer"
+      },
+      "success_criteria": {
+        "stage2_5.bgeo_pack": "mesh_count > 0"
+      },
+      "side_effects": "writes .bgeo file to Houdini project Cook_Data",
+      "rollback_strategy": "file_backup",
+      "estimated_duration_sec": 180,
+      "requires_confirm": true,
+      "data_source_paths": {}
+    },
+    {
+      "id": "executor.run_pcg_pipeline",
+      "category": "executor",
+      "runs_on": "ue_python",
+      "implementation_version": "not_yet_implemented",
+      "description": "包装 pcg_pipeline.PipelineController.start_pipeline — 仅暴露 Step1-3 (D03 五铁律, Step4/5/6 不实施)",
+      "handles_work_items": [
+        "stage5.work_levels",
+        "stage5.main_levels",
+        "stage5.landscape_levels",
+        "stage5.env_lighting_placement"
+      ],
+      "automation_pattern": "agent",
+      "trigger_endpoint": "ue_python://executor/run_pcg_pipeline",
+      "input_schema": {
+        "theme_short": "string",
+        "scene_name": "string",
+        "selected_steps": "array<enum: step1|step2|step2_1|step2_2|step3>"
+      },
+      "output_schema": {
+        "created_levels": "array<string>",
+        "step_results": "object"
+      },
+      "success_criteria": {
+        "stage5.work_levels": "created_levels.length > 0"
+      },
+      "side_effects": "creates UE Levels + Actor placement",
+      "rollback_strategy": "git_revert",
+      "estimated_duration_sec": 600,
+      "requires_confirm": true,
+      "data_source_paths": {}
+    },
+    {
+      "id": "executor.sync_dev_to_release",
+      "category": "executor",
+      "runs_on": "node",
+      "implementation_version": "not_yet_implemented",
+      "description": "Node 端 — 替代 FreeFileSync 手动操作; 用 fs+glob 实现增量同步 dev (E:/P4) -> release (F:/Houdini), 含冲突检测",
+      "handles_work_items": [
+        "stage4.hda_version_update"
+      ],
+      "automation_pattern": "agent",
+      "trigger_endpoint": "node://executor/sync_dev_to_release",
+      "input_schema": {
+        "source_paths": "array<string>",
+        "target_paths": "array<string>"
+      },
+      "output_schema": {
+        "files_synced": "integer",
+        "conflicts": "array<string>"
+      },
+      "success_criteria": {
+        "stage4.hda_version_update": "conflicts.length == 0"
+      },
+      "side_effects": "copies files between dev / release roots",
+      "rollback_strategy": "file_backup",
+      "estimated_duration_sec": 30,
+      "requires_confirm": true,
+      "data_source_paths": {}
+    }
+  ]
+}
