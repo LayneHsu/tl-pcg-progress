@@ -1,0 +1,245 @@
+{
+    "Format_Rules": [
+        {
+            "themes": ["YWMD", "JTDT", "JJGQ", "XTJX", "QLJX", "SXDT", "HAJH", "Module", "CQ", "KJMD"],
+            "types": ["Start", "End", "Area", "Outer"],
+            "format": "NxN_Tile"
+        },
+        {
+            "themes": ["Module"],
+            "types": ["Items"],
+            "format": "NxN_Tile"
+        },
+        {
+            "themes": ["XXGCB"],
+            "types": ["Room"],
+            "format": "Room_XXGCB"
+        }
+    ],
+    "Asset_Name_Formats": {
+        "NxN_Tile": {
+            "delimiter": "_",
+            "fields": ["", "Theme_Name", "Tile_Type", "Area_Level", "Size", "Opening", "Art_Variant", ""],
+            "post_parse": [
+                {
+                    "hook": "split_size",
+                    "args": {
+                        "source": "Size",
+                        "prefix": "Size"
+                    }
+                }
+            ]
+        },
+        "Room_XXGCB": {
+            "delimiter": "_",
+            "fields": ["", "Theme_Name", "", "Room_Size", "Room_Type_Str", "CTG_Number", "Room_Variant_Number", ""],
+            "post_parse": [
+                {
+                    "hook": "split_size",
+                    "args": {
+                        "source": "Room_Size",
+                        "prefix": "Room_Size"
+                    }
+                },
+                {
+                    "hook": "map_string_to_id",
+                    "args": {
+                        "source": "Room_Type_Str",
+                        "id_attr": "Room_Type_ID",
+                        "values": ["Living", "Bed", "Book", "Storage"]
+                    }
+                }
+            ]
+        }
+    },
+    "Theme_Registry": {
+        "modular": {
+            "YWMD": {
+                "parent": "JiaoHui",
+                "display_name": "YiWangMiDian",
+                "sub_theme": "YWMD",
+                "menu_visible": true
+            },
+            "JTDT": {
+                "parent": "JiaoHui",
+                "display_name": "JiaoTangDaTing",
+                "sub_theme": "JTDT",
+                "menu_visible": true
+            },
+            "JJGQ": {
+                "parent": "DiDu",
+                "display_name": "JinJiGaoQiang",
+                "sub_theme": "JJGQ",
+                "menu_visible": true
+            },
+            "XTJX": {
+                "parent": "DiDu",
+                "display_name": "XinTuJieXiang",
+                "sub_theme": "XTJX",
+                "menu_visible": true
+            },
+            "QLJX": {
+                "parent": "DiDu",
+                "display_name": "QunLangJieXiang",
+                "sub_theme": "QLJX",
+                "menu_visible": true
+            },
+            "SXDT": {
+                "parent": "YiJi",
+                "display_name": "ShuXiDaTing",
+                "sub_theme": "SXDT",
+                "menu_visible": true
+            },
+            "HAJH": {
+                "parent": "JiaoHui",
+                "display_name": "HeiAnJiaoHui",
+                "sub_theme": "HAJH",
+                "uses": ["asset_name_format"],
+                "menu_visible": false
+            },
+            "CQ": {
+                "parent": "DiDu",
+                "display_name": "DiDu",
+                "sub_theme": "ChengQiang",
+                "uses": ["asset_name_format"],
+                "menu_visible": false
+            },
+            "Module": {
+                "parent": "Module",
+                "display_name": "Module",
+                "sub_theme": "Module",
+                "uses": ["asset_name_format"],
+                "menu_visible": false
+            },
+            "KJMD": {
+                "parent": "JiaoHui",
+                "display_name": "KuoJianMiDian",
+                "sub_theme": "KJMD",
+                "menu_visible": true
+            }
+        },
+        "mixed": {
+            "XXGCB": {
+                "parent": "ChengBao",
+                "display_name": "XiXueGuiChengBao",
+                "sub_theme": "XXGCB",
+                "uses": ["freeform_area", "modular_room_placement"]
+            }
+        },
+        "freeform": {}
+    },
+    "Mode_Configs": {
+        "modular": {
+            "themes": {
+                "YWMD": {
+                    "Unit_Size": 4,
+                    "Tile_Size": 28,
+                    "Road_Width": 12,
+                    "Black_Box": 1,
+                    "Distant_Tile": 0
+                },
+                "JTDT": {
+                    "Unit_Size": 4,
+                    "Tile_Size": 28,
+                    "Road_Width": 12,
+                    "Black_Box": 1,
+                    "Distant_Tile": 0
+                },
+                "JJGQ": {
+                    "Unit_Size": 4,
+                    "Tile_Size": 28,
+                    "Road_Width": 12,
+                    "Black_Box": 0,
+                    "Distant_Tile": 1
+                },
+                "XTJX": {
+                    "Unit_Size": 4,
+                    "Tile_Size": 48,
+                    "Road_Width": 16,
+                    "Black_Box": 0,
+                    "Distant_Tile": 1
+                },
+                "QLJX": {
+                    "Unit_Size": 4,
+                    "Tile_Size": 48,
+                    "Road_Width": 16,
+                    "Black_Box": 0,
+                    "Distant_Tile": 1
+                },
+                "SXDT": {
+                    "Unit_Size": 4,
+                    "Tile_Size": 80,
+                    "Road_Width": 16,
+                    "Black_Box": 0,
+                    "Distant_Tile": 1
+                },
+                "HAJH": {
+                    "Unit_Size": 4,
+                    "Tile_Size": 28,
+                    "Road_Width": 12,
+                    "Black_Box": 1,
+                    "Distant_Tile": 0
+                },
+                "CQ": {
+                    "Unit_Size": 4,
+                    "Tile_Size": 28,
+                    "Road_Width": 12,
+                    "Black_Box": 0,
+                    "Distant_Tile": 1
+                },
+                "Module": {
+                    "Unit_Size": 4,
+                    "Tile_Size": 28,
+                    "Road_Width": 12,
+                    "Black_Box": 0,
+                    "Distant_Tile": 0
+                },
+                "KJMD": {
+                    "Unit_Size": 4,
+                    "Tile_Size": 32,
+                    "Road_Width": 16,
+                    "Black_Box": 1,
+                    "Distant_Tile": 0
+                }
+            }
+        },
+        "mixed": {
+            "themes": {
+                "XXGCB": {
+                    "Unit_Size": 4,
+                    "Area_Draw_Mode": "freeform",
+                    "Room_Placement_Mode": "module",
+                    "Room_Sizes": {
+                        "0": [12, 12],
+                        "1": [12, 16],
+                        "2": [16, 16],
+                        "3": [16, 24],
+                        "4": [16, 32],
+                        "5": [20, 24],
+                        "6": [24, 24],
+                        "7": [24, 32],
+                        "8": [24, 36],
+                        "9": [32, 32],
+                        "10": [32, 48],
+                        "11": [48, 48]
+                    }
+                }
+            }
+        },
+        "freeform": {
+            "themes": {}
+        }
+    },
+    "HDA_Runtime_Classes": {
+        "modular": {
+            "allowed_theme_profiles": ["modular"]
+        },
+        "mixed": {
+            "allowed_theme_profiles": ["mixed"]
+        },
+        "freeform": {
+            "allowed_theme_profiles": ["freeform"]
+        }
+    }
+}
+

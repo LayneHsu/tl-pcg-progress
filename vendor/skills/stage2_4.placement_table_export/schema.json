@@ -1,0 +1,33 @@
+{
+  "id": "stage2_4.placement_table_export",
+  "kind": "automated",
+  "runtime": "python_daemon",
+  "inputs_schema": [
+    {
+      "name": "theme_short",
+      "type": "theme_short",
+      "required": true,
+      "description": "子主题 abbreviation (4 chars, A-Z0-9, 例 'YWMD')",
+      "source": { "kind": "instance_data", "path": "theme_short" }
+    },
+    {
+      "name": "dt_type",
+      "type": "string",
+      "required": true,
+      "description": "DT 类型. Phase 2A 仅支持 'pcg_assets'",
+      "source": { "kind": "trigger_param", "default": "pcg_assets" }
+    }
+  ],
+  "outputs_schema": [
+    { "name": "row_count", "type": "int", "description": "导出的 DT 行数 (success_criteria: > 0)" },
+    { "name": "json_path", "type": "string", "description": "写入的 JSON 绝对路径" },
+    { "name": "success_criteria_value", "type": "bool", "description": "row_count > 0 业务规则 (跟 Phase 2A executor evaluations 对齐)" }
+  ],
+  "metadata": {
+    "is_destructive": true,
+    "requires_confirm": true,
+    "estimated_duration_sec": 10,
+    "rollback_strategy": "file_backup",
+    "_known_gap_engine_path_no_backup": "段 5 ~ 段 6 engine path skill_runner 不调 ExecutorBase _do_file_backup 钩子 (那是 Phase 2A 专属). schema 这里写 file_backup 反映**意图**, 但 engine path 实际不跑 backup. 段 6 UI 跑前 TA 必须手动 backup P4 JSON: cp .../Configs/<theme>/Json/DT_PCG_Assets_<theme>.json{,.bak}. 段 6/7 UI 整合时业务函数本身可加 backup 选项或 skill main 显式调."
+  }
+}
